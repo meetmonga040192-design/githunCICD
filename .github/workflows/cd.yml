@@ -16,8 +16,10 @@ jobs:
 
   terraform-cd:
 
-    # CD will run only when CI is successful
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    # CD runs only when CI succeeds on main branch
+    if: >-
+      ${{ github.event.workflow_run.conclusion == 'success' &&
+          github.event.workflow_run.head_branch == 'main' }}
 
     runs-on: ubuntu-latest
 
@@ -51,7 +53,7 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
-      # 6. Download Terraform Plan
+      # 6. Download Terraform Plan from CI
       - name: Download Terraform Plan
         uses: actions/download-artifact@v4
         with:
