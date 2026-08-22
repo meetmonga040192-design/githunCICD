@@ -1,0 +1,19 @@
+name: Terraform CI
+
+on:
+  push:
+    branches:
+      - master
+      - featurebranch
+
+jobs:
+  terraform-ci:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Terraform Version
+        run: terraform version
