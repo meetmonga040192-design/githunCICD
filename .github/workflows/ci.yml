@@ -43,7 +43,7 @@ jobs:
 
       # 5. Security Scan
       - name: Terraform Security Scan
-        uses: aquasecurity/trivy-action@0.33.1
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: config
           scan-ref: .
