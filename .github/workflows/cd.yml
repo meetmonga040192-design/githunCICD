@@ -1,0 +1,64 @@
+name: Terraform CD
+
+on:
+  workflow_run:
+    workflows:
+      - "Terraform CI"
+    types:
+      - completed
+
+permissions:
+  id-token: write
+  contents: read
+  actions: read
+
+jobs:
+
+  terraform-cd:
+
+    # CD will run only when CI is successful
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    runs-on: ubuntu-latest
+
+    # Manual approval is configured on this environment
+    environment:
+      name: production
+
+    steps:
+
+      # 1. Checkout Repository
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # 2. Azure Login using OIDC
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: 6656127f-84b1-4863-8607-48501595f57a
+          tenant-id: "4b9cff3a-07ab-4d9d-945d-df704d1808d4"
+          subscription-id: "32befec2-21d4-498b-a715-32aa460c0a9d"
+
+      # 3. Setup Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      # 4. Terraform Version
+      - name: Terraform Version
+        run: terraform version
+
+      # 5. Terraform Init
+      - name: Terraform Init
+        run: terraform init
+
+      # 6. Download Terraform Plan
+      - name: Download Terraform Plan
+        uses: actions/download-artifact@v4
+        with:
+          name: terraform-plan
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      # 7. Terraform Apply
+      - name: Terraform Apply
+        run: terraform apply -auto-approve tfplan
