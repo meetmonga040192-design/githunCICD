@@ -3,12 +3,12 @@ name: Terraform CI
 on:
   push:
     branches:
-      - master
+      - main
       - featurebranch
 
   pull_request:
     branches:
-      - master
+      - main
 
 permissions:
   id-token: write
