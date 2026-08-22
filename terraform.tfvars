@@ -7,4 +7,8 @@ rgs_CICD = {
     name     = "cicd_rg2"
     location = "eastus"
   }
+  rg3 = {
+    name     = "cicd_rg3"
+    location = "eastus"
+  }
 }
